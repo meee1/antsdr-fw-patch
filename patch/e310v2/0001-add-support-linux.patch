@@ -148,7 +148,7 @@ index 000000000000..f5d596396a46
 +
 +&usb0 {
 +	xlnx,phy-reset-gpio = <&gpio0 47 0>;
-+	dr_mode = "otg";
++	dr_mode = "host";
 +	status = "okay";
 +	usb-phy = <&usb_phy0>;
 +};
