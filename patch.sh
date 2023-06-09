@@ -1,3 +1,6 @@
+set -e
+set -x
+
 target=$1
 
 cp ./patch/${target}/*hdl.patch ./plutosdr-fw/hdl
