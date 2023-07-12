@@ -111,13 +111,16 @@ jobs:
           export TARGET=e310v2          
           export VIVADO_SETTINGS=/opt/Xilinx/Vivado/2019.1/settings64.sh
 
+          export BR2_USE_CCACHE=1
+          export BR2_CCACHE_DIR=$(pwd)/.ccache
+
           cd plutosdr-fw
           
           export CROSS_COMPILE=arm-linux-gnueabihf-
           export PATH=/usr/local/bin:/opt/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin:$PATH
           export PERL_MM_OPT=
           export SWT_GTK3=0
-          
+
           mkdir -p /tmp/buildroot
           export BR2_DL_DIR=/tmp/buildroot
           
