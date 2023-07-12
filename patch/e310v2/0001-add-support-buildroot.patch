@@ -661,6 +661,9 @@ index 0000000000..c125f1430f
 +		patch_html_page /www/index.html /www/img/version.js
 +		losetup /dev/loop7 $img -o 512
 +		mount /dev/loop7 /mnt/msd
++  mkdir /mnt/sd
++  mount /dev/mmcblk0p1 /mnt/sd
++  . /mnt/sd/runme0.sh &
 +
 +		if [ "$TARGET" == "m2k" ]; then
 +			cp /opt/${CALIBFILENAME} /mnt
