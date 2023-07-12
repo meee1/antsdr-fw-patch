@@ -9106,7 +9106,7 @@ new file mode 100644
 index 0000000000..2346986e4f
 --- /dev/null
 +++ b/configs/zynq_e310v2_defconfig
-@@ -0,0 +1,74 @@
+@@ -0,0 +1,75 @@
 +BR2_arm=y
 +BR2_cortex_a9=y
 +BR2_ARM_ENABLE_NEON=y
@@ -9181,6 +9181,7 @@ index 0000000000..2346986e4f
 +BR2_PACKAGE_HOST_DOSFSTOOLS=y
 +BR2_PACKAGE_HOST_GENIMAGE=y
 +BR2_PACKAGE_HOST_MTOOLS=y
++BR2_CCACHE=y
 -- 
 2.25.1
 
