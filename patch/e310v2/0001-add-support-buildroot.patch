@@ -619,7 +619,7 @@ new file mode 100644
 index 0000000000..c125f1430f
 --- /dev/null
 +++ b/board/e310v2/S45msd
-@@ -0,0 +1,75 @@
+@@ -0,0 +1,78 @@
 +#!/bin/sh
 +# Server-side demuxing by default
 +
