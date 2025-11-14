@@ -52,7 +52,7 @@ jobs:
           sudo apt-get -y install git build-essential fakeroot libncurses5-dev libssl-dev ccache 
           sudo apt-get -y install dfu-util u-boot-tools device-tree-compiler mtools
           sudo apt-get -y install bc python3 cpio zip unzip rsync file wget 
-          sudo apt-get -y install libtinfo6 device-tree-compiler bison flex u-boot-tools xvfb
+          sudo apt-get -y install libtinfo6 device-tree-compiler bison flex u-boot-tools xvfb libmpc-dev
      
       - name: setup ccache symlinks
         run: |
