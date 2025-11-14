@@ -1,0 +1,122 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Cache zips
+        uses: actions/cache@v3
+        with:
+          path: |
+            /tmp/sdk.tar.gz
+            /tmp/buildroot/
+          key: ${{ runner.os }}
+          
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ccache-${{ runner.os }}
+          
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: install stuff
+        run: |
+          set -e
+          set -x
+          sudo apt-get update
+          sudo apt-get -y install git build-essential fakeroot libncurses5-dev libssl-dev ccache 
+          sudo apt-get -y install dfu-util u-boot-tools device-tree-compiler mtools
+          sudo apt-get -y install bc python3 cpio zip unzip rsync file wget 
+          sudo apt-get -y install libtinfo5 device-tree-compiler bison flex u-boot-tools xvfb
+     
+      - name: setup ccache symlinks
+        run: |
+          set -e
+          set -x       
+          ls -al /usr/local/bin/
+          
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/cc
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/gcc
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/g++
+          
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/arm-linux-gnueabihf-cc
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/arm-linux-gnueabihf-gcc
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/arm-linux-gnueabihf-g++
+          
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/arm-buildroot-linux-gnueabihf-cc
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/arm-buildroot-linux-gnueabihf-gcc
+          sudo ln -fs /usr/bin/ccache /usr/local/bin/arm-buildroot-linux-gnueabihf-g++
+          
+          sudo rm /usr/local/bin/arm-linux-gnueabihf-cc
+          sudo rm /usr/local/bin/arm-linux-gnueabihf-gcc
+          sudo rm /usr/local/bin/arm-linux-gnueabihf-g++
+          
+          ls -al /usr/local/bin/
+          
+      - name: prep it
+        run: |
+          set -e
+          set -x 
+          
+          sh resetGit.sh          
+          sh patch.sh e310v2
+          
+          cd plutosdr-fw
+          git tag v0.38 || true
+          
+      - name: make it
+        run: |
+          set -e
+          set -x 
+          export TARGET=e310v2          
+
+          export BR2_USE_CCACHE=1
+          export BR2_CCACHE_DIR=$(pwd)/.ccache
+
+          cd plutosdr-fw
+
+          mkdir -p /tmp/buildroot
+          export BR2_DL_DIR=/tmp/buildroot
+          
+          make
+          
+          cd build
+          rm legal-info*
+          ls -AGhl
+          
+          cd ..
+          make sdimg
+          #ls -AGhl build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: image
+          path: plutosdr-fw/build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sdimage
+          path: plutosdr-fw/build_sdimg
