@@ -112,11 +112,12 @@ jobs:
           cd ..
           make sdimg
           #ls -AGhl build
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: image
           path: plutosdr-fw/build
-      - uses: actions/upload-artifact@v3
+          
+      - uses: actions/upload-artifact@v4
         with:
           name: sdimage
           path: plutosdr-fw/build_sdimg
